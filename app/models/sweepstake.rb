@@ -28,6 +28,6 @@ class Sweepstake < ApplicationRecord
   private
 
   def generate_join_code
-    self.join_code = SecureRandom.hex(4)
+    self.join_code ||= SecureRandom.hex(4)
   end
 end

@@ -10,6 +10,12 @@ class Api::V1::Sweepstakes::PicksController < ApplicationController
     end
 
     picks = Pick.where(user_sweepstake: user_sweepstake).order(:position)
+    
+    if picks.empty?
+      prepare_picks(user_sweepstake)
+      picks = Pick.where(user_sweepstake: user_sweepstake).order(:position)
+    end
+
     render json: picks, status: :ok, each_serializer: PickSerializer
   end
 
@@ -45,5 +51,17 @@ class Api::V1::Sweepstakes::PicksController < ApplicationController
 
   def order_params
     params.permit(pick_option_ids: [])
+  end
+
+  def prepare_picks(user_sweepstake)
+    sweepstake_id = user_sweepstake.sweepstake_id
+    pick_options = FootballDataService.new.get_teams(sweepstake_id).order(:id)
+
+    pick_options.map.with_index do |pick_option, index|
+      pick = Pick.find_or_initialize_by(user_sweepstake: user_sweepstake, pick_option: pick_option)
+      pick.position = index + 1
+      pick.save!
+      pick
+    end
   end
 end

@@ -22,6 +22,7 @@ sweepstakes_data = [
 sweepstakes = sweepstakes_data.map do |sweepstake_data|
   sweepstake = Sweepstake.find_or_initialize_by(name: sweepstake_data[:name])
   sweepstake.deadline = sweepstake_data[:deadline]
+  sweepstake.join_code = "wc2026" if sweepstake.new_record?
   sweepstake.save!
   sweepstake
 

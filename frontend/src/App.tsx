@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom
 import './App.css';
 import Home from './pages/protected/Home';
 import Login from './pages/Login';
+import Register from './pages/Register';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Loader from './components/ui/Loader';
 import { Toaster } from 'react-hot-toast';
@@ -22,6 +23,7 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />

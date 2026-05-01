@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       post "auth/sign_in", to: "sessions#create"
+      post "auth/sign_up", to: "registrations#create"
       delete "auth/sign_out", to: "sessions#destroy"
       get "auth/me", to: "sessions#show"
 

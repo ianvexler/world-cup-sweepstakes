@@ -1,9 +1,9 @@
-import { ChangeEvent, SubmitEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import icon from '../assets/icon.png';
 import Button from '../components/ui/Button';
 import Input from '../components/ui/form/Input';
 import { login } from '../api/requests/sessions/login';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Alert from '../components/ui/Alert';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -25,7 +25,7 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = async (e: SubmitEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     setIsLoading(true);
@@ -80,6 +80,12 @@ const Login = () => {
             </Button>
           </div>
         </form>
+
+        <p className="mt-2 text-center">
+          <Link to="/register" className="underline underline-offset-2 text-sm text-neutral-400 hover:text-neutral-500">
+            Create an account
+          </Link>
+        </p>
       </div>
     </div>
   );

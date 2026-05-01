@@ -52,7 +52,7 @@ const RankTeams = ({ sweepstakeId, deadline, loading, setLoading }: RankTeamsPro
   };
 
   if (loading) {
-    return <Loader />;
+    return <div />;
   }
 
   return (

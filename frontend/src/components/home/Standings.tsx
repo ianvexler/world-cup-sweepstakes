@@ -25,7 +25,7 @@ const Standings = ({ loading, setLoading }: StandingsProps) => {
   return (
     <section className="flex flex-col gap-4">
       {loading ? (
-        <Loader />
+        <div />
       ) : standings.length === 0 ? (
         <p className="text-sm text-muted">No group standings available yet.</p>
       ) : (
