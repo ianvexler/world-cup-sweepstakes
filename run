@@ -1,0 +1,98 @@
+#!/bin/bash
+
+set -e
+
+COMMAND=$1
+
+case "$COMMAND" in
+  stack)
+    echo "Starting docker compose stack..."
+    docker compose up --build
+    ;;
+
+  stack-detach)
+    echo "Starting docker compose stack in detached mode..."
+    docker compose up -d --build
+    ;;
+
+  stop)
+    echo "Stopping docker compose stack..."
+    docker compose down
+    ;;
+
+  logs)
+    echo "Showing logs..."
+    docker compose logs -f
+    ;;
+
+  bundle)
+    echo "Running bundle command inside backed container..."
+    docker compose run backend bundle "${@:2}"
+    ;;
+
+  bundle:install)
+    echo "Running bundle install inside backend container..."
+    docker compose run backend bundle install
+    ;;
+
+  rails)
+    echo "Running rails command inside backend container: $@"
+    docker compose run backend "$@"
+    ;;
+
+  rubocop)
+    echo "Running rubocop command inside backend container..."
+    docker compose run backend bundle exec rubocop "${@:2}"
+    ;;
+
+  lint)
+    echo "Running linters for backend and frontend..."
+
+    echo "→ RuboCop (Rails backend with omakase config)..."
+    docker compose run backend bundle exec rubocop
+
+    echo "→ ESLint (React frontend)..."
+    docker compose run frontend npm run lint
+
+    echo "→ Prettier check (React frontend)..."
+    docker compose run frontend npm run format
+    ;;
+
+  lint:fix)
+    echo "Auto-fixing backend and frontend code..."
+
+    echo "→ RuboCop autofix (backend)..."
+    docker compose run backend bundle exec rubocop -A
+
+    echo "→ ESLint autofix (frontend)..."
+    docker compose run frontend npm run lint -- --fix
+
+    echo "→ Prettier write (frontend)..."
+    docker compose run frontend npm run format-fix
+    ;;
+
+  npm)
+    echo "Running npm command inside frontend container: ${@:2}"
+    docker compose run frontend npm "${@:2}"
+    ;;
+
+  npx)
+    echo "Running npx command inside frontend container: ${@:2}"
+    docker compose run frontend npx "${@:2}"
+    ;;
+
+  rspec)
+    echo "Running rspec tests inside backend container..."
+    docker compose run -e RAILS_ENV=test backend bundle exec rspec
+    ;;
+
+  test)
+    echo "Running tests inside backend container..."
+    docker compose run frontend npm run test
+    ;;
+
+  *)
+    echo "Usage: ./run {stack|stack-detach|stop|logs}"
+    exit 1
+    ;;
+esac
