@@ -3,14 +3,15 @@ import { PickOption } from '../../../../types';
 import classNames from 'classnames';
 
 interface PickOptionProps {
+  sortableId: string;
   pickOption: PickOption;
   index: number;
   isPastDeadline: boolean;
 }
 
-const PickOptionItem = ({ pickOption, index, isPastDeadline }: PickOptionProps) => {
+const PickOptionItem = ({ sortableId, pickOption, index, isPastDeadline }: PickOptionProps) => {
   const { ref, isDragging } = useSortable({
-    id: pickOption.id,
+    id: sortableId,
     index,
     disabled: isPastDeadline,
   });

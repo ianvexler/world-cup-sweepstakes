@@ -3,6 +3,7 @@
 # Table name: picks
 #
 #  id                 :bigint           not null, primary key
+#  position           :integer
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  pick_option_id     :bigint           not null

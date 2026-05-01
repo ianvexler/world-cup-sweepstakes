@@ -6,6 +6,12 @@ export type Sweepstake = {
   status: string;
 };
 
+export type UserPick = {
+  id: string;
+  position: number;
+  pick_option: PickOption;
+};
+
 export type PickOption = {
   id: string;
   name: string;

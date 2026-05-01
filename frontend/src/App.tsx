@@ -4,6 +4,7 @@ import Home from './pages/protected/Home';
 import Login from './pages/Login';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Loader from './components/ui/Loader';
+import { Toaster } from 'react-hot-toast';
 
 const ProtectedRoute = () => {
   const { loading, isAuthenticated } = useAuth();
@@ -27,6 +28,8 @@ const App = () => {
           </Route>
         </Routes>
       </BrowserRouter>
+
+      <Toaster position="top-right" />
     </AuthProvider>
   );
 };
