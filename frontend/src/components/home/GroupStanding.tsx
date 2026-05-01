@@ -22,7 +22,11 @@ const GroupStanding = ({ standing }: GroupStandingProps) => {
             <span className="text-center text-xs font-semibold tabular-nums text-muted">
               {team.position}
             </span>
-            <img src={team.team.crest} alt={team.team.name} className="size-4 rounded-full object-cover" />
+            <img
+              src={team.team.crest}
+              alt={team.team.name}
+              className="size-4 rounded-full object-cover"
+            />
             <p className="truncate text-sm text-foreground">{team.team.name}</p>
           </div>
         ))}

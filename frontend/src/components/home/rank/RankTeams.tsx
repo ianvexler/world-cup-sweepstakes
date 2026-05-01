@@ -16,21 +16,20 @@ const RankTeams = ({ sweepstakeId, deadline }: RankTeamsProps) => {
   const [pickOptions, setPickOptions] = useState<PickOption[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isPastDeadline = isAfter(
-    startOfDay(new Date()),
-    startOfDay(new Date(deadline))
-  );
+  const isPastDeadline = isAfter(startOfDay(new Date()), startOfDay(new Date(deadline)));
 
   useEffect(() => {
     setLoading(true);
 
-    getPickOptions(sweepstakeId).then((data) => {
-      setPickOptions(data);
-    }).finally(() => {
-      setLoading(false);
-    });
+    getPickOptions(sweepstakeId)
+      .then((data) => {
+        setPickOptions(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [sweepstakeId]);
-  
+
   if (loading) {
     return <Loader />;
   }
@@ -43,20 +42,18 @@ const RankTeams = ({ sweepstakeId, deadline }: RankTeamsProps) => {
             Drag to reorder
           </p>
         </div>
-        <div
-          className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-2 py-2 [scrollbar-gutter:stable] sm:px-3 sm:py-3"
-        >
-          <DragDropProvider       
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-2 py-2 [scrollbar-gutter:stable] sm:px-3 sm:py-3">
+          <DragDropProvider
             onDragOver={(event) => {
               setPickOptions((items) => move(items, event));
             }}
           >
             <ul className="flex flex-col gap-2 pb-1">
               {pickOptions.map((pickOption, index) => (
-                <PickOptionItem 
-                  key={pickOption.id} 
-                  pickOption={pickOption} 
-                  index={index} 
+                <PickOptionItem
+                  key={pickOption.id}
+                  pickOption={pickOption}
+                  index={index}
                   isPastDeadline={isPastDeadline}
                 />
               ))}
@@ -66,6 +63,6 @@ const RankTeams = ({ sweepstakeId, deadline }: RankTeamsProps) => {
       </div>
     </div>
   );
-}
+};
 
 export default RankTeams;

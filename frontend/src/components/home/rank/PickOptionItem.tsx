@@ -18,14 +18,17 @@ const PickOptionItem = ({ pickOption, index, isPastDeadline }: PickOptionProps) 
   const position = index + 1;
 
   return (
-    <li
-      ref={ref}
-      className={`list-none ${isDragging ? 'z-10' : ''}`}
-    >
-      <div className={classNames(
-        "flex items-center gap-2 rounded-lg border border-neutral-200/90 bg-white px-2 py-2 shadow-sm touch-manipulation sm:gap-2.5 sm:px-3 sm:py-2.5 dark:border-neutral-700 dark:bg-neutral-900", 
-        isPastDeadline ? 'cursor-default' : 'cursor-grab active:cursor-grabbing')}>
-        <span className="grid shrink-0 grid-cols-2 gap-0.5 text-neutral-400 dark:text-neutral-500" aria-hidden>
+    <li ref={ref} className={`list-none ${isDragging ? 'z-10' : ''}`}>
+      <div
+        className={classNames(
+          'flex items-center gap-2 rounded-lg border border-neutral-200/90 bg-white px-2 py-2 shadow-sm touch-manipulation sm:gap-2.5 sm:px-3 sm:py-2.5 dark:border-neutral-700 dark:bg-neutral-900',
+          isPastDeadline ? 'cursor-default' : 'cursor-grab active:cursor-grabbing'
+        )}
+      >
+        <span
+          className="grid shrink-0 grid-cols-2 gap-0.5 text-neutral-400 dark:text-neutral-500"
+          aria-hidden
+        >
           {Array.from({ length: 6 }, (_, i) => (
             <span key={i} className="size-1 rounded-full bg-current" />
           ))}

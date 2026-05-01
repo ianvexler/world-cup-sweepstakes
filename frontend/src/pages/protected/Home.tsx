@@ -8,7 +8,7 @@ import Standings from '../../components/home/Standings';
 
 const Home = () => {
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
-  
+
   useEffect(() => {
     getSweepstakes().then((data) => {
       setSweepstakes(data);
@@ -39,10 +39,7 @@ const Home = () => {
 
       <div className="mx-auto flex w-full max-w-[1000px] flex-1 flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
         <div className="flex min-h-0 w-full min-w-0 flex-col lg:max-w-85 lg:flex-none lg:shrink-0">
-          <RankTeams 
-            sweepstakeId={sweepstakes[0].id} 
-            deadline={sweepstakes[0].deadline}
-          />
+          <RankTeams sweepstakeId={sweepstakes[0].id} deadline={sweepstakes[0].deadline} />
         </div>
 
         <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col">

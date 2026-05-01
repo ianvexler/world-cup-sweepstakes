@@ -1,4 +1,4 @@
-import apiClient from "../../../apiClient";
+import apiClient from '../../../apiClient';
 
 const getPickOptions = async (sweepstakeId: string) => {
   const response = await apiClient.get(`/v1/sweepstakes/${sweepstakeId}/pick_options`);

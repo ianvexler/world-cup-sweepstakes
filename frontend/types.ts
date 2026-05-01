@@ -26,5 +26,5 @@ export type StandingTable = {
   team: {
     name: string;
     crest: string;
-  }
-}
+  };
+};

@@ -23,7 +23,7 @@ class Sweepstake < ApplicationRecord
 
   before_create :generate_join_code
 
-  scope :for_user, -> (user) { joins(:user_sweepstakes).where(user_sweepstakes: { user: user }) }
+  scope :for_user, ->(user) { joins(:user_sweepstakes).where(user_sweepstakes: { user: user }) }
 
   private
 

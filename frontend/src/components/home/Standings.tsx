@@ -11,11 +11,13 @@ const Standings = () => {
   useEffect(() => {
     setLoading(true);
 
-    getStandings().then((data) => {
-      setStandings(data);
-    }).finally(() => {
-      setLoading(false);
-    });
+    getStandings()
+      .then((data) => {
+        setStandings(data);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   return (

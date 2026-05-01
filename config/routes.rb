@@ -15,10 +15,10 @@ Rails.application.routes.draw do
       delete "auth/sign_out", to: "sessions#destroy"
       get "auth/me", to: "sessions#show"
 
-      resources :sweepstakes, only: [:index] do
-        resources :pick_options, only: [:index], module: :sweepstakes
+      resources :sweepstakes, only: [ :index ] do
+        resources :pick_options, only: [ :index ], module: :sweepstakes
       end
-      resources :standings, only: [:index]
+      resources :standings, only: [ :index ]
     end
   end
 end
