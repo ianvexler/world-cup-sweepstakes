@@ -7,7 +7,7 @@ const Input = ({ className = '', ...props }: InputProps) => {
   return (
     <input
       className={classNames(
-        'w-full p-2 border border-border bg-field text-field-foreground placeholder:text-field-placeholder rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent',
+        'w-full p-2 border border-border bg-field text-field-foreground placeholder:text-field-placeholder rounded-md focus:outline-none focus:ring-1 focus:border-transparent',
         className
       )}
       {...props}

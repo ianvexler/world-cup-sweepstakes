@@ -1,19 +1,25 @@
 import { useState, useEffect } from 'react';
-import { type DragEndEvent, DragDropProvider } from '@dnd-kit/react';
-import { arrayMove, move } from '@dnd-kit/helpers';
-import { isSortableOperation } from '@dnd-kit/react/sortable';
-import { PickOption } from '../../../types';
-import getPickOptions from '../../api/requests/sweepstakes/pickOptions/getPickOptions';
+import { DragDropProvider } from '@dnd-kit/react';
+import { move } from '@dnd-kit/helpers';
+import { isAfter, startOfDay } from 'date-fns';
+import { PickOption } from '../../../../types';
+import getPickOptions from '../../../api/requests/sweepstakes/pickOptions/getPickOptions';
 import PickOptionItem from './PickOptionItem';
-import Loader from '../ui/Loader';
+import Loader from '../../ui/Loader';
 
 interface RankTeamsProps {
   sweepstakeId: string;
+  deadline: string;
 }
 
-const RankTeams = ({ sweepstakeId }: RankTeamsProps) => {
+const RankTeams = ({ sweepstakeId, deadline }: RankTeamsProps) => {
   const [pickOptions, setPickOptions] = useState<PickOption[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const isPastDeadline = isAfter(
+    startOfDay(new Date()),
+    startOfDay(new Date(deadline))
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -24,19 +30,13 @@ const RankTeams = ({ sweepstakeId }: RankTeamsProps) => {
       setLoading(false);
     });
   }, [sweepstakeId]);
-
+  
   if (loading) {
     return <Loader />;
   }
 
   return (
     <div className="flex w-full min-h-0 flex-1 flex-col">
-      <header className="mb-4 shrink-0 text-center sm:mb-5">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-          Rank the teams
-        </h1>
-      </header>
-
       <div className="flex min-h-0 flex-1 flex-col rounded-2xl border border-border bg-field/50 shadow-xl ring-1 ring-white/5 backdrop-blur-sm">
         <div className="border-b border-border/80 px-3 py-2.5 sm:px-4">
           <p className="text-center text-xs font-medium uppercase tracking-wide text-muted">
@@ -53,7 +53,12 @@ const RankTeams = ({ sweepstakeId }: RankTeamsProps) => {
           >
             <ul className="flex flex-col gap-2 pb-1">
               {pickOptions.map((pickOption, index) => (
-                <PickOptionItem key={pickOption.id} pickOption={pickOption} index={index} />
+                <PickOptionItem 
+                  key={pickOption.id} 
+                  pickOption={pickOption} 
+                  index={index} 
+                  isPastDeadline={isPastDeadline}
+                />
               ))}
             </ul>
           </DragDropProvider>

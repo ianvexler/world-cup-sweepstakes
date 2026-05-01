@@ -12,3 +12,19 @@ export type PickOption = {
   crest: string;
   football_data_id: number;
 };
+
+export type Standing = {
+  id: string;
+  stage: string;
+  type: string;
+  group: string;
+  table: StandingTable[];
+};
+
+export type StandingTable = {
+  position: number;
+  team: {
+    name: string;
+    crest: string;
+  }
+}

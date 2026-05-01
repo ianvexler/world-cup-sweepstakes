@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       resources :sweepstakes, only: [:index] do
         resources :pick_options, only: [:index], module: :sweepstakes
       end
+      resources :standings, only: [:index]
     end
   end
 end

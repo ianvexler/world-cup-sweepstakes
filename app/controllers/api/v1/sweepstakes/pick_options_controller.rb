@@ -2,8 +2,8 @@ class Api::V1::Sweepstakes::PickOptionsController < ApplicationController
   def index
     sweepstake = Sweepstake.find(params[:sweepstake_id])
 
-    football_data_service = FootballDataService.new(sweepstake.id)
-    pick_options = football_data_service.get_teams
+    football_data_service = FootballDataService.new
+    pick_options = football_data_service.get_teams(sweepstake.id)
 
     render json: pick_options, status: :ok, each_serializer: PickOptionSerializer
   end

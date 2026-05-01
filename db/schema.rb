@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_01_171942) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_01_212243) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -31,6 +31,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_01_171942) do
     t.datetime "updated_at", null: false
     t.index ["pick_option_id"], name: "index_picks_on_pick_option_id"
     t.index ["user_sweepstake_id"], name: "index_picks_on_user_sweepstake_id"
+  end
+
+  create_table "standings", force: :cascade do |t|
+    t.string "stage"
+    t.string "group"
+    t.jsonb "table", default: []
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sweepstakes", force: :cascade do |t|

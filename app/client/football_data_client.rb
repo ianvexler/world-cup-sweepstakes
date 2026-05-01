@@ -17,6 +17,14 @@ class FootballDataClient
     parse_teams(response)
   end
 
+  def get_standings
+    # WC has id 2000
+    response = self.class.get('/v4/competitions/2000/standings', headers: @headers)
+    raise StandardError, "football-data request failed with status #{response.code}" unless response.success?
+
+    parse_standings(response)
+  end
+
   private
 
   def parse_teams(response)
@@ -25,6 +33,16 @@ class FootballDataClient
         id: team['id'],
         name: team['name'],
         crest: team['crest'],
+      }
+    end
+  end
+
+  def parse_standings(response)
+    response['standings'].map do |standing|
+      {
+        stage: standing['stage'],
+        group: standing['group'],
+        table: standing['table']
       }
     end
   end
