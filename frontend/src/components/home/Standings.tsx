@@ -4,13 +4,15 @@ import { Standing } from '../../../types';
 import Loader from '../ui/Loader';
 import GroupStanding from './GroupStanding';
 
-const Standings = () => {
+interface StandingsProps {
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+}
+
+const Standings = ({ loading, setLoading }: StandingsProps) => {
   const [standings, setStandings] = useState<Standing[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-
     getStandings()
       .then((data) => {
         setStandings(data);

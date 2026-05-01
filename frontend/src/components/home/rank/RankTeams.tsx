@@ -10,11 +10,12 @@ import Loader from '../../ui/Loader';
 interface RankTeamsProps {
   sweepstakeId: string;
   deadline: string;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
 }
 
-const RankTeams = ({ sweepstakeId, deadline }: RankTeamsProps) => {
+const RankTeams = ({ sweepstakeId, deadline, loading, setLoading }: RankTeamsProps) => {
   const [pickOptions, setPickOptions] = useState<PickOption[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const isPastDeadline = isAfter(startOfDay(new Date()), startOfDay(new Date(deadline)));
 

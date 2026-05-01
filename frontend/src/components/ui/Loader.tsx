@@ -4,7 +4,9 @@ interface LoaderProps extends HTMLAttributes<HTMLDivElement> {
   size?: number;
 }
 
-const Loader = ({ size = 15, className = '', ...props }: LoaderProps) => {
+const Loader = ({ size = 40, className = '', ...props }: LoaderProps) => {
+  const px = `${size}px`;
+
   return (
     <div
       className={`flex items-center justify-center gap-3 text-muted ${className}`}
@@ -13,7 +15,8 @@ const Loader = ({ size = 15, className = '', ...props }: LoaderProps) => {
       {...props}
     >
       <span
-        className={`h-${size} w-${size} animate-spin rounded-full border-4 border-border border-t-primary`}
+        className="shrink-0 animate-spin rounded-full border-[0.2em] border-border border-t-primary"
+        style={{ width: px, height: px }}
         aria-hidden="true"
       />
     </div>
