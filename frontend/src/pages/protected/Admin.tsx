@@ -2,21 +2,19 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import getSweepstakes from '../../api/requests/sweepstakes/getSweepstakes';
+import updateSweepstakeStatus from '../../api/requests/sweepstakes/updateSweepstakeStatus';
 import { useEffect, useState } from 'react';
-import { Sweepstake } from '../../../types';
+import { sweepstakeStatuses, Sweepstake, SweepstakeStatus } from '../../../types';
 import Loader from '../../components/ui/Loader';
 import Button from '../../components/ui/Button';
+import Dropdown from '../../components/ui/Dropdown';
+import { format, isValid, parseISO } from 'date-fns';
+import { capitalize } from '../../utils/capitalize';
 
-function formatDateTime(iso: string) {
-  try {
-    return new Date(iso).toLocaleString(undefined, {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    });
-  } catch {
-    return iso;
-  }
-}
+const sweepstakeStatusOptions = sweepstakeStatuses.map((value) => ({
+  value,
+  label: capitalize(value),
+}));
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -24,7 +22,13 @@ const Admin = () => {
 
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
+  const [statusSavingId, setStatusSavingId] = useState<string | null>(null);
 
+  const formatDateTime = (iso: string) => {
+    const date = parseISO(iso);
+    return isValid(date) ? format(date, 'PPp') : iso;
+  };
+  
   useEffect(() => {
     if (!isAdmin || authLoading) return;
 
@@ -37,6 +41,18 @@ const Admin = () => {
         setSweepstakesLoading(false);
       });
   }, [isAdmin, authLoading]);
+
+  const handleStatusChange = async (sweepstakeId: string, status: SweepstakeStatus) => {
+    setStatusSavingId(sweepstakeId);
+    try {
+      const updated = await updateSweepstakeStatus(sweepstakeId, status);
+      setSweepstakes((prev) => prev.map((s) => (s.id === sweepstakeId ? updated : s)));
+    } catch {
+      toast.error('Could not update status');
+    } finally {
+      setStatusSavingId(null);
+    }
+  };
 
   useEffect(() => {
     if (authLoading || isAdmin) return;
@@ -69,7 +85,6 @@ const Admin = () => {
             <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
               Admin
             </h1>
-            <p className="mt-1 text-sm text-muted">Sweepstakes overview</p>
           </header>
         </div>
 
@@ -100,6 +115,19 @@ const Admin = () => {
                     <dt className="text-xs font-medium uppercase tracking-wide text-muted">Deadline</dt>
                     <dd className="mt-1 text-sm text-foreground">
                       {formatDateTime(s.deadline)}
+                    </dd>
+                  </div>
+
+                  <div className="px-4 py-3 sm:px-5">
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Status</dt>
+                    <dd className="mt-1">
+                      <Dropdown
+                        aria-label={`Status for ${s.name}`}
+                        value={s.status}
+                        options={sweepstakeStatusOptions}
+                        disabled={statusSavingId === s.id}
+                        onChange={(value) => handleStatusChange(s.id, value as SweepstakeStatus)}
+                      />
                     </dd>
                   </div>
 

@@ -41,4 +41,28 @@ class FootballDataService
 
     standings_scope
   end
+
+  def get_matches(refresh: false)
+    matches_scope = Match.all
+    return matches_scope unless refresh || matches_scope.empty?
+
+    matches = @client.get_matches
+    ActiveRecord::Base.transaction do
+      matches.each do |match_data|
+        match_record = matches_scope.find_or_initialize_by(football_data_id: match_data[:id])
+        match_record.start_time = match_data[:start_time]
+        match_record.matchday = match_data[:matchday]
+        match_record.stage = match_data[:stage]
+        match_record.group = match_data[:group]
+        match_record.last_updated = match_data[:last_updated]
+        
+        match_record.home_team = match_data[:home_team]
+        match_record.away_team = match_data[:away_team]
+        match_record.score = match_data[:score]
+        match_record.save!
+      end
+    end
+
+    matches_scope
+  end
 end

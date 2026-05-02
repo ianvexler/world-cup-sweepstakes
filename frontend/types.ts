@@ -3,7 +3,7 @@ export type Sweepstake = {
   name: string;
   deadline: string;
   join_code: string;
-  status: string;
+  status: SweepstakeStatus;
   created_at: string;
   updated_at: string;
 };
@@ -34,5 +34,44 @@ export type StandingTable = {
   team: {
     name: string;
     crest: string;
+  };
+};
+
+export const sweepstakeStatuses = [
+  'draft', 
+  'started', 
+  'completed'
+] as const;
+
+export type SweepstakeStatus = (typeof sweepstakeStatuses)[number];
+
+export type Match = {
+  id: string;
+  start_time: string;
+  matchday: number;
+  stage: string;
+  group: string;
+  last_updated: string;
+  home_team: {
+    name: string;
+    shortName: string;
+    crest: string;
+  };
+  away_team: {
+    name: string;
+    shortName: string;
+    crest: string;
+  };
+  score: {
+    winner: string | null;
+    duration: string;
+    fullTime: {
+      home: number | null;
+      away: number | null;
+    };
+    halfTime: {
+      home: number | null;
+      away: number | null;
+    };
   };
 };

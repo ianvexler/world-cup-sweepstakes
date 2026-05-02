@@ -16,7 +16,7 @@ Rails.application.routes.draw do
       delete "auth/sign_out", to: "sessions#destroy"
       get "auth/me", to: "sessions#show"
 
-      resources :sweepstakes, only: [ :index ] do
+      resources :sweepstakes, only: [ :index, :update ] do
         resources :pick_options, only: [ :index ], module: :sweepstakes
         resources :picks, only: [ :index ], module: :sweepstakes do
           collection do
@@ -25,6 +25,11 @@ Rails.application.routes.draw do
         end
       end
       resources :standings, only: [ :index ]
+      resources :matches, only: [ :index ]
+      
+      namespace :internal do
+        post "matches/sync", to: "matches#sync"
+      end
     end
   end
 end

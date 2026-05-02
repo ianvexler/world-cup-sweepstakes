@@ -10,9 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_01_234146) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_02_114523) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "matches", force: :cascade do |t|
+    t.integer "football_data_id", null: false
+    t.datetime "start_time", null: false
+    t.integer "matchday"
+    t.string "stage", null: false
+    t.string "group"
+    t.string "last_updated", null: false
+    t.jsonb "home_team", null: false
+    t.jsonb "away_team", null: false
+    t.jsonb "score", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "pick_options", force: :cascade do |t|
     t.string "name", null: false

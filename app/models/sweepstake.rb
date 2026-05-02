@@ -25,6 +25,12 @@ class Sweepstake < ApplicationRecord
 
   scope :for_user, ->(user) { joins(:user_sweepstakes).where(user_sweepstakes: { user: user }) }
 
+  enum :status, {
+    draft: "draft",
+    started: "started",
+    completed: "completed"
+  }
+
   private
 
   def generate_join_code
