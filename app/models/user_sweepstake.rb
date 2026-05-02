@@ -5,6 +5,7 @@
 #  id            :bigint           not null, primary key
 #  is_admin      :boolean          default(FALSE), not null
 #  is_owner      :boolean          default(FALSE), not null
+#  points        :integer          default(0), not null
 #  status        :string           default("pending"), not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null

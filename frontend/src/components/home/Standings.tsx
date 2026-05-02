@@ -5,12 +5,12 @@ import Loader from '../ui/Loader';
 import GroupStanding from './GroupStanding';
 
 interface StandingsProps {
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-const Standings = ({ loading, setLoading }: StandingsProps) => {
+const Standings = ({ onLoadingChange }: StandingsProps) => {
   const [standings, setStandings] = useState<Standing[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     getStandings()
@@ -19,13 +19,14 @@ const Standings = ({ loading, setLoading }: StandingsProps) => {
       })
       .finally(() => {
         setLoading(false);
+        onLoadingChange?.(false);
       });
   }, []);
 
   return (
     <section className="flex flex-col gap-4">
       {loading ? (
-        <div />
+        <Loader size={32} />
       ) : standings.length === 0 ? (
         <p className="text-sm text-muted">No group standings available yet.</p>
       ) : (

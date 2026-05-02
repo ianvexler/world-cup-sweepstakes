@@ -1,26 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Standings from "../../components/home/Standings";
 import Layout from "../../components/ui/Layout";
 import Tabs from "../../components/ui/Tabs";
 import { Match } from "../../../types";
 import getMatches from "../../api/requests/matches/getMatches";
 import Loader from "../../components/ui/Loader";
-import classNames from "classnames";
 import MatchEntry from "../../components/matches/MatchEntry";
+import SweepstakeStandings from "../../components/league/SweepstakeStandings";
+import { useParams } from "react-router-dom";
+import { format, parseISO, startOfDay } from "date-fns";
 
-const tabs = ['League', 'Knockouts'] as const;
+const tabs = ['League', 'Matches'] as const;
 type LeagueTab = (typeof tabs)[number];
 
 const League = () => {
+  const { sweepstakeId } = useParams();
+
   const [matches, setMatches] = useState<Match[]>([]);
   const [activeTab, setActiveTab] = useState<LeagueTab>('League');
 
-  const [standingsLoading, setStandingsLoading] = useState(true);
   const [matchesLoading, setMatchesLoading] = useState(true);
+  const [standingsLoading, setStandingsLoading] = useState(true);
+  const isLoading = matchesLoading || standingsLoading;
 
   useEffect(() => {
-    setMatchesLoading(true);
-
     getMatches()
       .then((data) => {
         setMatches(data);
@@ -30,42 +33,82 @@ const League = () => {
       });
   }, []);
 
-  const isLoading = standingsLoading || matchesLoading;
-  
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
+
+  const groupedMatches = useCallback(() => {
+    const grouped: Record<string, Match[]> = {};
+    matches.forEach((match) => {
+      const day = format(parseISO(match.start_time), 'yyyy-MM-dd');
+      if (!grouped[day]) grouped[day] = [];
+      grouped[day].push(match);
+    });
+    return grouped;
+  }, [matches]);
+
+  const nearestFutureDay = useCallback(() => {
+    const today = startOfDay(new Date());
+    const days = Object.keys(groupedMatches()).sort();
+    return days.find((d) => new Date(d) >= today) ?? days[days.length - 1];
+  }, [groupedMatches]);
+
+  useEffect(() => {
+    if (activeTab !== 'Matches' || matchesLoading) return;
+
+    const days = Object.keys(groupedMatches()).sort();
+    const nearest = nearestFutureDay();
+    const isAlreadyFirst = days[0] === nearest;
+
+    if (!isAlreadyFirst && todayRef.current && scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: todayRef.current.offsetTop - 8,
+        behavior: 'smooth',
+      });
+    }
+  }, [activeTab, matchesLoading]);
+
   return (
     <Layout title="League Phase">
-      {isLoading ? (
-        <Loader size={40} />
-      ) : null}
+      {isLoading && <Loader size={40} />}
 
-      <div className={classNames("grid grid-cols-2 gap-4 w-full", isLoading ? "hidden" : "")}>
-        <div className="text-sm text-muted">
-          {matches.length === 0 ? (
-            <div className="text-sm text-muted">
-              No matches found
-            </div>
-          ) : (
-            <div className="text-sm text-muted flex flex-col gap-2">
-              {matches.map((match) => (
-                <MatchEntry key={match.id} match={match} />
-              ))}
-            </div>
-          )}
+      <div className={`mx-auto flex w-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-start ${isLoading ? 'invisible pointer-events-none' : ''}`}>
+        <div className="w-full lg:w-72 lg:shrink-0">
+          <SweepstakeStandings sweepstakeId={sweepstakeId || ''} />
         </div>
 
-        <div>
-          <Tabs 
-            tabs={[...tabs]} 
-            activeTab={activeTab} 
-            onChange={setActiveTab} 
-            className="mb-2"
+        <div className="flex flex-1 flex-col gap-4">
+          <Tabs
+            tabs={[...tabs]}
+            activeTab={activeTab}
+            onChange={setActiveTab}
           />
-          
+
           {activeTab === 'League' && (
-            <Standings loading={standingsLoading} setLoading={setStandingsLoading} />
+            <Standings onLoadingChange={setStandingsLoading} />
           )}
-          {activeTab === 'Knockouts' && (
-            <div className="text-sm text-muted">Knockouts coming soon.</div>
+
+          {activeTab === 'Matches' && (
+            matches.length === 0 ? (
+              <p className="text-sm text-muted">No matches found.</p>
+            ) : (
+              <div ref={scrollContainerRef} className="flex max-h-[calc(100vh-16rem)] flex-col gap-4 overflow-y-auto pr-1">
+                {Object.entries(groupedMatches()).map(([day, dayMatches]) => {
+                  const isNearest = day === nearestFutureDay();
+                  return (
+                    <div key={day} ref={isNearest ? todayRef : null}>
+                      <h2 className="mb-2 text-sm font-medium text-muted">
+                        {format(new Date(day), 'EEEE, MMMM d')}
+                      </h2>
+                      <div className="flex flex-col gap-2">
+                        {dayMatches.map((match) => (
+                          <MatchEntry key={match.id} match={match} />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )
           )}
         </div>
       </div>

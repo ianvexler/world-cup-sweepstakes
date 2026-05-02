@@ -41,9 +41,6 @@ const MatchEntry = ({ match }: MatchEntryProps) => {
             <span className="text-sm font-semibold text-foreground tabular-nums">
               {isValid(startDate) ? format(startDate, 'HH:mm') : '–'}
             </span>
-            <span className="text-[10px] text-muted">
-              {isValid(startDate) ? format(startDate, 'd MMM') : ''}
-            </span>
           </>
         )}
       </div>

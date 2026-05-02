@@ -21,7 +21,7 @@ const Home = () => {
     getSweepstakes()
       .then((data) => {
         if (data[0].status !== 'draft') {
-          navigate('/league');
+          navigate(`/league/${data[0].id}`);
         }
 
         setSweepstakes(data);
@@ -43,7 +43,7 @@ const Home = () => {
   return (
     <Layout title="Rank the teams">
       {sweepstake && (
-        <p className="text-sm text-muted">
+        <p className="text-sm text-muted mb-4">
           Deadline: {new Date(sweepstake.deadline).toLocaleDateString()}
         </p>
       )}
@@ -68,7 +68,7 @@ const Home = () => {
             </div>
 
             <div className="flex min-h-0 w-full min-w-0 flex-1 flex-col">
-              <Standings loading={standingsLoading} setLoading={setStandingsLoading} />
+              <Standings onLoadingChange={() => setStandingsLoading(false)} />
             </div>
           </>
         )}

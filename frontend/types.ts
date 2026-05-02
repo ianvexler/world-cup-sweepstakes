@@ -75,3 +75,9 @@ export type Match = {
     };
   };
 };
+
+export type LeagueUser = {
+  id: string;
+  name: string;
+  points: number;
+};

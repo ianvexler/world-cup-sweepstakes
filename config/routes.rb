@@ -23,6 +23,7 @@ Rails.application.routes.draw do
             put :order
           end
         end
+        resources :league, only: [ :index ], module: :sweepstakes
       end
       resources :standings, only: [ :index ]
       resources :matches, only: [ :index ]

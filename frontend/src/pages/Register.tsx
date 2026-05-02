@@ -15,6 +15,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [passwordConfirmation, setPasswordConfirmation] = useState('');
   const [joinCode, setJoinCode] = useState('');
+  const [name, setName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -24,7 +25,7 @@ const Register = () => {
     setError('');
 
     try {
-      await register(email, password, passwordConfirmation, joinCode);
+      await register(email, password, passwordConfirmation, joinCode, name);
       setIsAuthenticated(true);
       navigate('/');
     } catch (err: unknown) {
@@ -61,6 +62,10 @@ const Register = () => {
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
             <Input type="email" placeholder="Email" value={email} onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
+          </div>
+
+          <div className="mt-4">
+            <Input type="text" placeholder="Name" value={name} onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
           </div>
 
           <div className="mt-4">

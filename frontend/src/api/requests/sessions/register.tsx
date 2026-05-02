@@ -4,7 +4,8 @@ export const register = async (
   email: string,
   password: string,
   passwordConfirmation: string,
-  joinCode: string
+  joinCode: string,
+  name: string
 ) => {
   const response = await apiClient.post('/v1/auth/sign_up', {
     registration: {
@@ -12,6 +13,7 @@ export const register = async (
       password,
       password_confirmation: passwordConfirmation,
       join_code: joinCode,
+      name,
     },
   });
 
