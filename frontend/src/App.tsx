@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Loader from './components/ui/Loader';
 import { Toaster } from 'react-hot-toast';
+import Admin from './pages/protected/Admin';
 
 const ProtectedRoute = () => {
   const { loading, isAuthenticated } = useAuth();
@@ -27,6 +28,7 @@ const App = () => {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
+            <Route path="/admin" element={<Admin />} />
           </Route>
         </Routes>
       </BrowserRouter>

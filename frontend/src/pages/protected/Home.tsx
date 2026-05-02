@@ -6,8 +6,14 @@ import RankTeams from '../../components/home/rank/RankTeams';
 import Loader from '../../components/ui/Loader';
 import Standings from '../../components/home/Standings';
 import classNames from 'classnames';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../components/ui/Button';
 
 const Home = () => {
+  const { isAdmin } = useAuth();
+  const navigate = useNavigate();
+  
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
   const [rankTeamsLoading, setRankTeamsLoading] = useState(true);
@@ -31,6 +37,14 @@ const Home = () => {
 
   return (
     <div className="flex min-h-dvh w-full flex-col items-stretch px-4 pb-[max(3rem,env(safe-area-inset-bottom,0px))] pt-6 sm:items-center sm:px-6 sm:pb-16 sm:pt-8">
+      {isAdmin && (
+        <div className="mb-4 flex w-full justify-end sm:mb-4">
+          <Button type="button" variant="secondary" size="md" onClick={() => navigate('/admin')}>
+            Admin
+          </Button>
+        </div>
+      )}
+
       <div className="mb-4 flex shrink-0 justify-center sm:mb-4">
         <a href="https://thecurve.io/" target="_blank" rel="noreferrer">
           <img src={icon} className="h-14 w-auto sm:h-20" alt="The Curve" />

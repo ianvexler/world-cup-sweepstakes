@@ -4,6 +4,8 @@ export type Sweepstake = {
   deadline: string;
   join_code: string;
   status: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type UserPick = {

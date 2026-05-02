@@ -6,17 +6,22 @@ interface AuthContextType {
 
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
+  isAdmin: boolean;
+  setIsAdmin: Dispatch<SetStateAction<boolean>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   loading: true,
   isAuthenticated: false,
   setIsAuthenticated: () => {},
+  isAdmin: false,
+  setIsAdmin: () => {},
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     checkSession();
@@ -28,10 +33,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await check();
 
+      console.log(response);
+
       if (response.user) {
         setIsAuthenticated(true);
+        setIsAdmin(response.user.is_admin);
       } else {
         setIsAuthenticated(false);
+        setIsAdmin(false);
       }
     } catch (error) {
       setIsAuthenticated(false);
@@ -47,6 +56,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         loading,
         isAuthenticated,
         setIsAuthenticated,
+        isAdmin,
+        setIsAdmin,
       }}
     >
       {children}
