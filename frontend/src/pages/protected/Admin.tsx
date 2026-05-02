@@ -10,6 +10,7 @@ import Button from '../../components/ui/Button';
 import Dropdown from '../../components/ui/Dropdown';
 import { format, isValid, parseISO } from 'date-fns';
 import { capitalize } from '../../utils/capitalize';
+import assignTeams from '../../api/requests/sweepstakes/assignTeams';
 
 const sweepstakeStatusOptions = sweepstakeStatuses.map((value) => ({
   value,
@@ -23,6 +24,7 @@ const Admin = () => {
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
   const [statusSavingId, setStatusSavingId] = useState<string | null>(null);
+  const [assignTeamsLoading, setAssignTeamsLoading] = useState(false);
 
   const formatDateTime = (iso: string) => {
     const date = parseISO(iso);
@@ -58,6 +60,19 @@ const Admin = () => {
     if (authLoading || isAdmin) return;
     toast.error('You are not authorized to access this page');
   }, [authLoading, isAdmin]);
+
+  const handleAssignTeams = async (sweepstakeId: string) => {
+    setAssignTeamsLoading(true);
+
+    try {
+      await assignTeams(sweepstakeId);
+      toast.success('Teams assigned successfully');
+    } catch {
+      toast.error('Could not assign teams');
+    } finally {
+      setAssignTeamsLoading(false);
+    }
+  };
 
   if (authLoading) {
     return <Loader className="h-screen w-screen" size={40} />;
@@ -146,6 +161,18 @@ const Admin = () => {
                   <div className="px-4 py-3 sm:px-5">
                     <dt className="text-xs font-medium uppercase tracking-wide text-muted">Updated</dt>
                     <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.updated_at)}</dd>
+                  </div>
+
+                  <div className="px-4 py-3 sm:px-5">
+                    <Button 
+                      type="button" 
+                      variant="secondary" 
+                      size="md" 
+                      onClick={() => handleAssignTeams(s.id)}
+                      disabled={assignTeamsLoading || s.assigned_teams}
+                    >
+                      {assignTeamsLoading ? 'Assigning...' : 'Assign teams'}
+                    </Button>
                   </div>
                 </dl>
               </li>

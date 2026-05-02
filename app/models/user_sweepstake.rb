@@ -24,6 +24,8 @@
 #
 class UserSweepstake < ApplicationRecord
   resourcify
+  has_many :picks, dependent: :destroy
+  has_many :sweepstake_picks, dependent: :destroy
 
   belongs_to :user
   belongs_to :sweepstake

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 interface LayoutProps {
   children?: React.ReactNode;
-  title: string;
+  title?: string;
 };
 
 const Layout = ({ children, title }: LayoutProps) => {
@@ -28,11 +28,15 @@ const Layout = ({ children, title }: LayoutProps) => {
         </a>
       </div>
 
-      <header className="mb-4 shrink-0 text-center sm:mb-5">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
-          {title}
-        </h1>
-      </header>
+      {title ? (
+        <header className="mb-4 shrink-0 text-center sm:mb-5">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+            {title}
+          </h1>
+        </header>
+      ) : (
+        <div className="mb-4" />
+      )}
 
       {children}
     </div>

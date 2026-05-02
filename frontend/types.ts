@@ -6,6 +6,7 @@ export type Sweepstake = {
   status: SweepstakeStatus;
   created_at: string;
   updated_at: string;
+  assigned_teams: boolean;
 };
 
 export type UserPick = {
@@ -80,4 +81,9 @@ export type LeagueUser = {
   id: string;
   name: string;
   points: number;
+};
+
+export type SweepstakePickAssigned = {
+  id: string;
+  pick_option: PickOption;
 };

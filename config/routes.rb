@@ -17,12 +17,18 @@ Rails.application.routes.draw do
       get "auth/me", to: "sessions#show"
 
       resources :sweepstakes, only: [ :index, :update ] do
+        member do
+          post :assign_teams
+        end
+
         resources :pick_options, only: [ :index ], module: :sweepstakes
         resources :picks, only: [ :index ], module: :sweepstakes do
           collection do
             put :order
           end
         end
+
+        resources :sweepstake_picks, only: [ :index ], module: :sweepstakes
         resources :league, only: [ :index ], module: :sweepstakes
       end
       resources :standings, only: [ :index ]

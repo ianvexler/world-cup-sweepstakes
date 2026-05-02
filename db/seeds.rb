@@ -4,10 +4,26 @@ users_data = [
   { email: 'ianvexler@gmail.com', name: 'Ian', password: ENV['ADMIN_PASSWORD'], is_admin: true }
 ]
 
+if Rails.env.development?
+  users_data.push(
+    { email: 'test@example.com', name: 'Test', password: 'password', is_admin: false }
+  )
+  users_data.push(
+    { email: 'test2@example.com', name: 'Test2', password: 'password', is_admin: false }
+  )
+  users_data.push(
+    { email: 'test3@example.com', name: 'Test3', password: 'password', is_admin: false }
+  )
+  users_data.push(
+    { email: 'test4@example.com', name: 'Test4', password: 'password', is_admin: false }
+  )
+end
+
 users = users_data.map do |user_data|
   user = User.find_or_initialize_by(email: user_data[:email])
   user.password = user_data[:password]
   user.is_admin = user_data[:is_admin]
+  user.name = user_data[:name]
   user.save!
   user
 end
@@ -26,7 +42,9 @@ sweepstakes = sweepstakes_data.map do |sweepstake_data|
   sweepstake.save!
   sweepstake
 
-  UserSweepstake.create!(user: users.first, sweepstake: sweepstake, is_owner: true)
+  for user in users
+    UserSweepstake.create!(user: user, sweepstake: sweepstake, is_owner: user == users.first)
+  end
 end
 
 puts "#{sweepstakes.count} Sweepstakes created successfully"

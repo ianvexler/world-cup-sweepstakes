@@ -7,6 +7,7 @@ import getMatches from "../../api/requests/matches/getMatches";
 import Loader from "../../components/ui/Loader";
 import MatchEntry from "../../components/matches/MatchEntry";
 import SweepstakeStandings from "../../components/league/SweepstakeStandings";
+import MySweepstakePicks from "../../components/league/MySweepstakePicks";
 import { useParams } from "react-router-dom";
 import { format, parseISO, startOfDay } from "date-fns";
 
@@ -68,12 +69,13 @@ const League = () => {
   }, [activeTab, matchesLoading]);
 
   return (
-    <Layout title="League Phase">
+    <Layout>
       {isLoading && <Loader size={40} />}
 
       <div className={`mx-auto flex w-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-start ${isLoading ? 'invisible pointer-events-none' : ''}`}>
-        <div className="w-full lg:w-72 lg:shrink-0">
+        <div className="flex w-full flex-col gap-4 lg:w-72 lg:shrink-0">
           <SweepstakeStandings sweepstakeId={sweepstakeId || ''} />
+          <MySweepstakePicks sweepstakeId={sweepstakeId || ''} />
         </div>
 
         <div className="flex flex-1 flex-col gap-4">

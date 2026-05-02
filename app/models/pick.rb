@@ -22,4 +22,17 @@
 class Pick < ApplicationRecord
   belongs_to :user_sweepstake
   belongs_to :pick_option
+
+  before_validation :assign_default_position, on: :create
+
+  validates :position, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  private
+
+  def assign_default_position
+    return unless position.nil?
+    return unless user_sweepstake
+
+    self.position = user_sweepstake.picks.maximum(:position).to_i + 1
+  end
 end
