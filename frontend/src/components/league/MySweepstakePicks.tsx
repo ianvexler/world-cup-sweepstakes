@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import getSweepstakePicks from "../../api/requests/sweepstakes/getSweepstakePicks";
-import { SweepstakePickAssigned } from "../../../types";
+import { useEffect, useState } from 'react';
+import getSweepstakePicks from '../../api/requests/sweepstakes/getSweepstakePicks';
+import { SweepstakePickAssigned } from '../../../types';
 
 interface MySweepstakePicksProps {
   sweepstakeId: string;
@@ -15,19 +15,15 @@ const MySweepstakePicks = ({ sweepstakeId }: MySweepstakePicksProps) => {
 
     getSweepstakePicks(sweepstakeId)
       .then(setPicks)
-      .catch(() => setError("Could not load your teams."));
+      .catch(() => setError('Could not load your teams.'));
   }, [sweepstakeId]);
 
   if (error) {
-    return (
-      <p className="text-sm text-muted">{error}</p>
-    );
+    return <p className="text-sm text-muted">{error}</p>;
   }
 
   if (picks.length === 0) {
-    return (
-      <p className="text-sm text-muted">No teams assigned yet.</p>
-    );
+    return <p className="text-sm text-muted">No teams assigned yet.</p>;
   }
 
   return (
@@ -37,22 +33,15 @@ const MySweepstakePicks = ({ sweepstakeId }: MySweepstakePicksProps) => {
       </header>
       <ul className="divide-y divide-border/60">
         {picks.map((row) => (
-          <li
-            key={row.id}
-            className="flex items-center gap-3 px-4 py-3 sm:px-5"
-          >
+          <li key={row.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
             {row.pick_option.crest ? (
-              <img
-                src={row.pick_option.crest}
-                alt=""
-                className="h-8 w-8 shrink-0 object-contain"
-              />
+              <img src={row.pick_option.crest} alt="" className="h-6 w-6 lg:h-8 lg:w-8 shrink-0 object-contain" />
             ) : (
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs text-muted">
                 ?
               </span>
             )}
-            <span className="truncate text-sm font-medium text-foreground">
+            <span className="truncate text-xs lg:text-sm font-medium text-foreground">
               {row.pick_option.name}
             </span>
           </li>

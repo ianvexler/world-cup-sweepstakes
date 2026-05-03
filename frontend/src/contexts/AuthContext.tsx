@@ -1,9 +1,10 @@
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 import { check } from '../api/requests/sessions/check';
+import { User } from '../../types';
 
 interface AuthContextType {
   loading: boolean;
-
+  currentUser: User | null;
   isAuthenticated: boolean;
   setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   isAdmin: boolean;
@@ -12,6 +13,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType>({
   loading: true,
+  currentUser: null,
   isAuthenticated: false,
   setIsAuthenticated: () => {},
   isAdmin: false,
@@ -20,6 +22,7 @@ const AuthContext = createContext<AuthContextType>({
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
@@ -33,17 +36,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const response = await check();
 
-      console.log(response);
-
       if (response.user) {
+        setCurrentUser(response.user);
         setIsAuthenticated(true);
         setIsAdmin(response.user.is_admin);
       } else {
         setIsAuthenticated(false);
         setIsAdmin(false);
+        setCurrentUser(null);
       }
     } catch (error) {
       setIsAuthenticated(false);
+      setCurrentUser(null);
       console.error(error);
     } finally {
       setLoading(false);
@@ -54,6 +58,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         loading,
+        currentUser,
         isAuthenticated,
         setIsAuthenticated,
         isAdmin,

@@ -82,7 +82,10 @@ const Login = () => {
         </form>
 
         <p className="mt-2 text-center">
-          <Link to="/register" className="underline underline-offset-2 text-sm text-neutral-400 hover:text-neutral-500">
+          <Link
+            to="/register"
+            className="underline underline-offset-2 text-sm text-neutral-400 hover:text-neutral-500"
+          >
             Create an account
           </Link>
         </p>

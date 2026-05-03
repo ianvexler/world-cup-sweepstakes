@@ -10,7 +10,7 @@ import Layout from '../../components/ui/Layout';
 
 const Home = () => {
   const navigate = useNavigate();
-  
+
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
   const [rankTeamsLoading, setRankTeamsLoading] = useState(true);
@@ -32,9 +32,7 @@ const Home = () => {
   }, []);
 
   const sweepstake = sweepstakes[0];
-  const isLoading =
-    sweepstakesLoading ||
-    (!!sweepstake && (rankTeamsLoading || standingsLoading));
+  const isLoading = sweepstakesLoading || (!!sweepstake && (rankTeamsLoading || standingsLoading));
 
   if (sweepstakesLoading) {
     return <Loader size={50} />;
@@ -50,9 +48,9 @@ const Home = () => {
 
       {isLoading && <Loader size={50} />}
 
-      <div 
+      <div
         className={classNames(
-          "mx-auto flex w-full max-w-[1000px] flex-1 flex-col gap-6 lg:flex-row lg:items-start lg:gap-8", 
+          'mx-auto flex w-full max-w-[1000px] flex-1 flex-col gap-6 lg:flex-row lg:items-start lg:gap-8',
           isLoading ? 'opacity-0' : ''
         )}
       >

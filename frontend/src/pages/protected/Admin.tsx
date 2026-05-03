@@ -30,7 +30,7 @@ const Admin = () => {
     const date = parseISO(iso);
     return isValid(date) ? format(date, 'PPp') : iso;
   };
-  
+
   useEffect(() => {
     if (!isAdmin || authLoading) return;
 
@@ -127,14 +127,16 @@ const Admin = () => {
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Deadline</dt>
-                    <dd className="mt-1 text-sm text-foreground">
-                      {formatDateTime(s.deadline)}
-                    </dd>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Deadline
+                    </dt>
+                    <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.deadline)}</dd>
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Status</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Status
+                    </dt>
                     <dd className="mt-1">
                       <Dropdown
                         aria-label={`Status for ${s.name}`}
@@ -147,27 +149,33 @@ const Admin = () => {
                   </div>
 
                   <div className="px-4 py-3 sm:px-5 sm:col-span-2">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Join code</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Join code
+                    </dt>
                     <dd className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                       <span className="font-mono text-sm text-foreground">{s.join_code}</span>
                     </dd>
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Created</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Created
+                    </dt>
                     <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.created_at)}</dd>
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">Updated</dt>
+                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                      Updated
+                    </dt>
                     <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.updated_at)}</dd>
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
-                    <Button 
-                      type="button" 
-                      variant="secondary" 
-                      size="md" 
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="md"
                       onClick={() => handleAssignTeams(s.id)}
                       disabled={assignTeamsLoading || s.assigned_teams}
                     >

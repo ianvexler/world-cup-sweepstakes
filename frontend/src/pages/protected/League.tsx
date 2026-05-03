@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import Standings from "../../components/home/Standings";
-import Layout from "../../components/ui/Layout";
-import Tabs from "../../components/ui/Tabs";
-import { Match } from "../../../types";
-import getMatches from "../../api/requests/matches/getMatches";
-import Loader from "../../components/ui/Loader";
-import MatchEntry from "../../components/matches/MatchEntry";
-import SweepstakeStandings from "../../components/league/SweepstakeStandings";
-import MySweepstakePicks from "../../components/league/MySweepstakePicks";
-import { useParams } from "react-router-dom";
-import { format, parseISO, startOfDay } from "date-fns";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import Standings from '../../components/home/Standings';
+import Layout from '../../components/ui/Layout';
+import Tabs from '../../components/ui/Tabs';
+import { Match } from '../../../types';
+import getMatches from '../../api/requests/matches/getMatches';
+import Loader from '../../components/ui/Loader';
+import MatchEntry from '../../components/matches/MatchEntry';
+import SweepstakeStandings from '../../components/league/SweepstakeStandings';
+import MySweepstakePicks from '../../components/league/MySweepstakePicks';
+import KnockoutBracket from '../../components/league/knockoutBracket/KnockoutBracket';
+import { useParams } from 'react-router-dom';
+import { format, parseISO, startOfDay } from 'date-fns';
 
-const tabs = ['League', 'Matches'] as const;
+const tabs = ['League', 'Knockout', 'Matches'] as const;
 type LeagueTab = (typeof tabs)[number];
 
 const League = () => {
@@ -72,28 +73,35 @@ const League = () => {
     <Layout>
       {isLoading && <Loader size={40} />}
 
-      <div className={`mx-auto flex w-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-start ${isLoading ? 'invisible pointer-events-none' : ''}`}>
-        <div className="flex w-full flex-col gap-4 lg:w-72 lg:shrink-0">
+      <div
+        className={`mx-auto flex w-full max-w-6xl flex-col gap-6 lg:flex-row lg:items-start ${isLoading ? 'invisible pointer-events-none' : ''}`}
+      >
+        <div className="flex w-full flex-col items-stretch gap-4 sm:flex-row sm:items-start sm:justify-center lg:flex-col lg:items-stretch lg:justify-start lg:w-72 lg:shrink-0">
           <SweepstakeStandings sweepstakeId={sweepstakeId || ''} />
           <MySweepstakePicks sweepstakeId={sweepstakeId || ''} />
         </div>
 
-        <div className="flex flex-1 flex-col gap-4">
-          <Tabs
-            tabs={[...tabs]}
-            activeTab={activeTab}
-            onChange={setActiveTab}
-          />
+        <div className="hidden flex-1 flex-col gap-4 md:flex">
+          <Tabs tabs={[...tabs]} activeTab={activeTab} onChange={setActiveTab} />
 
           {activeTab === 'League' && (
-            <Standings onLoadingChange={setStandingsLoading} />
+            <Standings onLoadingChange={setStandingsLoading} showResults={true} />
           )}
 
-          {activeTab === 'Matches' && (
-            matches.length === 0 ? (
+          {activeTab === 'Knockout' && (
+            <div className="max-h-[calc(124vh)] overflow-y-auto">
+              <KnockoutBracket matches={matches} />
+            </div>
+          )}
+
+          {activeTab === 'Matches' &&
+            (matches.length === 0 ? (
               <p className="text-sm text-muted">No matches found.</p>
             ) : (
-              <div ref={scrollContainerRef} className="flex max-h-[calc(100vh-16rem)] flex-col gap-4 overflow-y-auto pr-1">
+              <div
+                ref={scrollContainerRef}
+                className="flex max-h-[calc(124vh)] flex-col gap-4 overflow-y-auto pr-1"
+              >
                 {Object.entries(groupedMatches()).map(([day, dayMatches]) => {
                   const isNearest = day === nearestFutureDay();
                   return (
@@ -110,8 +118,7 @@ const League = () => {
                   );
                 })}
               </div>
-            )
-          )}
+            ))}
         </div>
       </div>
     </Layout>

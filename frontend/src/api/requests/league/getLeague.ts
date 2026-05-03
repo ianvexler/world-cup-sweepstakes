@@ -1,4 +1,4 @@
-import apiClient from "../../apiClient";
+import apiClient from '../../apiClient';
 
 const getLeague = async (sweepstakeId: string) => {
   const response = await apiClient.get(`/v1/sweepstakes/${sweepstakeId}/league`);

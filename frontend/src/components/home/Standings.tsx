@@ -6,9 +6,10 @@ import GroupStanding from './GroupStanding';
 
 interface StandingsProps {
   onLoadingChange?: (loading: boolean) => void;
+  showResults?: boolean;
 }
 
-const Standings = ({ onLoadingChange }: StandingsProps) => {
+const Standings = ({ onLoadingChange, showResults = false }: StandingsProps) => {
   const [standings, setStandings] = useState<Standing[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +33,7 @@ const Standings = ({ onLoadingChange }: StandingsProps) => {
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {standings.map((standing) => (
-            <GroupStanding key={standing.id} standing={standing} />
+            <GroupStanding key={standing.id} standing={standing} showResults={showResults} />
           ))}
         </div>
       )}

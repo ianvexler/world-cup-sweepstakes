@@ -1,12 +1,12 @@
-import { useAuth } from "../../contexts/AuthContext";
-import Button from "./Button";
-import icon from "../../assets/icon.png";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from '../../contexts/AuthContext';
+import Button from './Button';
+import icon from '../../assets/icon.png';
+import { useNavigate } from 'react-router-dom';
 
 interface LayoutProps {
   children?: React.ReactNode;
   title?: string;
-};
+}
 
 const Layout = ({ children, title }: LayoutProps) => {
   const { isAdmin } = useAuth();

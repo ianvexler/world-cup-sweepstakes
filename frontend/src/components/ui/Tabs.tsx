@@ -27,9 +27,7 @@ const Tabs = <T extends string>({ tabs, activeTab, onChange, className = '' }: T
             onClick={() => onChange(tab)}
             className={classNames(
               'flex-1 rounded-md px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ring-offset-background',
-              isActive
-                ? 'bg-card text-black shadow-sm'
-                : 'text-white hover:text-foreground'
+              isActive ? 'bg-card text-black shadow-sm' : 'text-white hover:text-foreground'
             )}
           >
             {tab}

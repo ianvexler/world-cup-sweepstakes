@@ -1,5 +1,5 @@
-import apiClient from "../../apiClient";
-import { SweepstakePickAssigned } from "../../../../types";
+import apiClient from '../../apiClient';
+import { SweepstakePickAssigned } from '../../../../types';
 
 const getSweepstakePicks = async (sweepstakeId: string): Promise<SweepstakePickAssigned[]> => {
   const response = await apiClient.get<SweepstakePickAssigned[]>(

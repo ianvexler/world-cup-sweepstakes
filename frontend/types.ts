@@ -36,13 +36,10 @@ export type StandingTable = {
     name: string;
     crest: string;
   };
+  points?: number;
 };
 
-export const sweepstakeStatuses = [
-  'draft', 
-  'started', 
-  'completed'
-] as const;
+export const sweepstakeStatuses = ['draft', 'started', 'completed'] as const;
 
 export type SweepstakeStatus = (typeof sweepstakeStatuses)[number];
 
@@ -77,13 +74,26 @@ export type Match = {
   };
 };
 
+export type LeagueUserPick = {
+  team: string;
+  crest: string;
+};
+
 export type LeagueUser = {
   id: string;
   name: string;
   points: number;
+  picks: LeagueUserPick[];
 };
 
 export type SweepstakePickAssigned = {
   id: string;
   pick_option: PickOption;
+};
+
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  is_admin: boolean;
 };

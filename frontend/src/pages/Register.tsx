@@ -29,7 +29,10 @@ const Register = () => {
       setIsAuthenticated(true);
       navigate('/');
     } catch (err: unknown) {
-      const data = err && typeof err === 'object' && 'response' in err ? (err as { response?: { data?: unknown } }).response?.data : undefined;
+      const data =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: unknown } }).response?.data
+          : undefined;
       if (data && typeof data === 'object') {
         if ('error' in data && typeof (data as { error: string }).error === 'string') {
           setError((data as { error: string }).error);
@@ -61,11 +64,23 @@ const Register = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="mt-4">
-            <Input type="email" placeholder="Email" value={email} onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)} required />
+            <Input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              required
+            />
           </div>
 
           <div className="mt-4">
-            <Input type="text" placeholder="Name" value={name} onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)} required />
+            <Input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+              required
+            />
           </div>
 
           <div className="mt-4">
@@ -83,7 +98,9 @@ const Register = () => {
               type="password"
               placeholder="Confirm password"
               value={passwordConfirmation}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setPasswordConfirmation(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setPasswordConfirmation(e.target.value)
+              }
               required
             />
           </div>
@@ -112,7 +129,10 @@ const Register = () => {
 
         <p className="mt-3 text-center text-sm text-neutral-500">
           Already have an account?{' '}
-          <Link to="/login" className="underline underline-offset-2 text-sm text-neutral-400 hover:text-neutral-500">
+          <Link
+            to="/login"
+            className="underline underline-offset-2 text-sm text-neutral-400 hover:text-neutral-500"
+          >
             Sign in
           </Link>
         </p>

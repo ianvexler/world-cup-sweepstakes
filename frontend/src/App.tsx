@@ -30,7 +30,7 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path='/league/:sweepstakeId' element={<League />} />
+            <Route path="/league/:sweepstakeId" element={<League />} />
           </Route>
         </Routes>
       </BrowserRouter>
