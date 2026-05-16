@@ -48,3 +48,43 @@ sweepstakes = sweepstakes_data.map do |sweepstake_data|
 end
 
 puts "#{sweepstakes.count} Sweepstakes created successfully"
+
+
+if Rails.env.development?
+  puts 'Seeding matches from mock-matches.json...'
+
+  mock_matches_path = Rails.root.join('mock-matches.json')
+  unless mock_matches_path.exist?
+    puts "Skipping matches: #{mock_matches_path} not found"
+  else
+    payload = JSON.parse(File.read(mock_matches_path))
+    camelize_keys = lambda do |value|
+      case value
+      when Hash
+        value.transform_keys { |k| k.to_s.underscore.camelize(:lower) }
+            .transform_values { |v| camelize_keys.call(v) }
+      when Array
+        value.map { |v| camelize_keys.call(v) }
+      else
+        value
+      end
+    end
+
+    ActiveRecord::Base.transaction do
+      payload.fetch('matches').each do |m|
+        match = Match.find_or_initialize_by(football_data_id: m['id'])
+        match.start_time = m['utcDate']
+        match.matchday = m['matchday']
+        match.stage = m['stage']
+        match.group = m['group']
+        match.last_updated = m['lastUpdated'].to_s
+        match.home_team = camelize_keys.call(m['homeTeam'])
+        match.away_team = camelize_keys.call(m['awayTeam'])
+        match.score = camelize_keys.call(m['score'])
+        match.save!
+      end
+    end
+
+    puts "#{payload.fetch('matches').size} Matches seeded successfully"
+  end
+end

@@ -13,7 +13,7 @@ class AssignTeamsService
       users_this_round = user_sweepstakes.shuffle
 
       users_this_round.each do |user_sweepstake|
-        user_picks = user_sweepstake.picks.sort_by { |pick| [pick.position, pick.id] }
+        user_picks = user_sweepstake.picks.sort_by { |pick| [ pick.position, pick.id ] }
         selected_pick = top_available_pick(user_picks, available_options, user_sweepstake.id)
 
         available_options.delete(selected_pick.pick_option)

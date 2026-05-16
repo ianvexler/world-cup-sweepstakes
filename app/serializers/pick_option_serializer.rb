@@ -5,6 +5,7 @@
 #  id               :bigint           not null, primary key
 #  crest            :string
 #  name             :string           not null
+#  points           :integer          default(0), not null
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  football_data_id :integer

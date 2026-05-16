@@ -6,7 +6,7 @@ class Api::V1::Sweepstakes::LeagueController < ApplicationController
     end
 
     users = sweepstake.users
-    
+
     users_data = []
     users.each do |user|
       user_sweepstake = UserSweepstake

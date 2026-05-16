@@ -46,11 +46,13 @@ class FootballDataClient
   end
 
   def parse_standings(response)
+    matchday = response["season"]["currentMatchday"]
     response["standings"].map do |standing|
       {
         stage: standing["stage"],
         group: standing["group"],
-        table: standing["table"]
+        table: camelize_keys(standing["table"]),
+        matchday: matchday
       }
     end
   end

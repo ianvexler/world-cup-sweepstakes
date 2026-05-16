@@ -10,7 +10,7 @@ class Api::V1::Sweepstakes::PicksController < ApplicationController
     end
 
     picks = Pick.where(user_sweepstake: user_sweepstake).order(:position)
-    
+
     if picks.empty?
       prepare_picks(user_sweepstake)
       picks = Pick.where(user_sweepstake: user_sweepstake).order(:position)

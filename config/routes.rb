@@ -33,7 +33,7 @@ Rails.application.routes.draw do
       end
       resources :standings, only: [ :index ]
       resources :matches, only: [ :index ]
-      
+
       namespace :internal do
         post "matches/sync", to: "matches#sync"
       end

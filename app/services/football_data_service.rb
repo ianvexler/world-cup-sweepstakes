@@ -35,6 +35,7 @@ class FootballDataService
         )
 
         standing_record.table = standing_data[:table]
+        standing_record.matchday = standing_data[:matchday]
         standing_record.save!
       end
     end
@@ -55,7 +56,7 @@ class FootballDataService
         match_record.stage = match_data[:stage]
         match_record.group = match_data[:group]
         match_record.last_updated = match_data[:last_updated]
-        
+
         match_record.home_team = match_data[:home_team]
         match_record.away_team = match_data[:away_team]
         match_record.score = match_data[:score]

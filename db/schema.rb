@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_02_200257) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_02_212230) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -35,6 +35,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_02_200257) do
     t.datetime "updated_at", null: false
     t.string "crest"
     t.integer "football_data_id"
+    t.integer "points", default: 0, null: false
     t.index ["sweepstake_id"], name: "index_pick_options_on_sweepstake_id"
   end
 
@@ -54,6 +55,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_02_200257) do
     t.jsonb "table", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "matchday", default: 0, null: false
   end
 
   create_table "sweepstake_picks", force: :cascade do |t|

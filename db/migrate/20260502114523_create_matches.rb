@@ -7,7 +7,7 @@ class CreateMatches < ActiveRecord::Migration[8.0]
       t.string :stage, null: false
       t.string :group
       t.string :last_updated, null: false
-      
+
       t.jsonb :home_team, null: false
       t.jsonb :away_team, null: false
       t.jsonb :score, null: false

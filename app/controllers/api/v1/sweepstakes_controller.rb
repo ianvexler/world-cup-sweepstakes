@@ -17,7 +17,7 @@ class Api::V1::SweepstakesController < ApplicationController
     assign_teams_service.call
 
     sweepstake.update(assigned_teams: true)
-    
+
     render json: { message: "Teams assigned successfully" }, status: :ok
   end
 end
