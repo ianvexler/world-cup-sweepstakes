@@ -6,6 +6,11 @@
 # Read more: https://github.com/cyu/rack-cors
 
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
+  production_origins = ENV.fetch("CORS_ALLOWED_ORIGINS", "")
+    .split(",")
+    .map(&:strip)
+    .reject(&:empty?)
+
   # Development origins
   allow do
     origins "http://localhost:5173"
@@ -16,15 +21,14 @@ Rails.application.config.middleware.insert_before 0, Rack::Cors do
       methods: [ :get, :post, :put, :patch, :delete, :options, :head ]
   end
 
-  # Add staging and production origins here
-  # allow do
-  #   origins(
-  #     "https://staging.example.com",
-  #     "https://production.example.com"
-  #   )
+  if production_origins.any?
+    allow do
+      origins(*production_origins)
 
-  #   resource "*",
-  #     headers: :any,
-  #     methods: [ :get, :post, :put, :patch, :delete, :options, :head ]
-  # end
+      resource "*",
+        headers: :any,
+        expose: [ "Authorization" ],
+        methods: [ :get, :post, :put, :patch, :delete, :options, :head ]
+    end
+  end
 end
