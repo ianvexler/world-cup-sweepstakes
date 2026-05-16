@@ -1,3 +1,8 @@
+# fly.toml app configuration file generated for world-cup-sweepstakes on 2026-05-16T18:50:34Z
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
 app = "world-cup-sweepstakes"
 primary_region = "lhr"
 
