@@ -26,3 +26,5 @@ group :development, :test do
   # Pre-configured RuboCop setup
   gem "rubocop-rails-omakase", require: false
 end
+
+gem "dockerfile-rails", ">= 1.7", group: :development
