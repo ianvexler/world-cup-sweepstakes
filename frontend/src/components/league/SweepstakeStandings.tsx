@@ -49,14 +49,14 @@ const SweepstakeStandings = ({ sweepstakeId }: SweepstakeStandingsProps) => {
                 {position}
               </span>
               <div className="min-w-0 flex flex-col gap-1">
-                <span className="block truncate text-sm font-medium text-foreground mb-0">{user.name}</span>
+                <span className="block truncate text-sm font-medium text-foreground mb-0">
+                  {user.name}
+                </span>
 
                 <LeagueUserPicksSummary
                   picks={user.picks}
                   expanded={openTeamsUserId === user.id}
-                  onToggle={() =>
-                    setOpenTeamsUserId((id) => (id === user.id ? null : user.id))
-                  }
+                  onToggle={() => setOpenTeamsUserId((id) => (id === user.id ? null : user.id))}
                 />
               </div>
 

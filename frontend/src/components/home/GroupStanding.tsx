@@ -34,10 +34,7 @@ const GroupStanding = ({ standing, showResults = false }: GroupStandingProps) =>
 
       <div className="space-y-1.5">
         {standing.table.map((team) => (
-          <div
-            key={`${standing.id}-${team.position}-${team.team.name}`}
-            className={rowClass}
-          >
+          <div key={`${standing.id}-${team.position}-${team.team.name}`} className={rowClass}>
             <span className="text-center text-xs font-semibold tabular-nums text-muted">
               {team.position}
             </span>

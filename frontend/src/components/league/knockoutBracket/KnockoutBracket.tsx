@@ -46,7 +46,7 @@ const KnockoutBracket = ({ matches }: KnockoutBracketProps) => {
     }
     return Number(a.id) - Number(b.id);
   };
-  
+
   const chunkPairs = (matches: Match[]): [Match, Match | undefined][] => {
     const pairs: [Match, Match | undefined][] = [];
     for (let i = 0; i < matches.length; i += 2) {
@@ -54,18 +54,15 @@ const KnockoutBracket = ({ matches }: KnockoutBracketProps) => {
     }
     return pairs;
   };
-  
+
   const stageLabel = (stage: string): string => {
     return STAGE_LABELS[stage] ?? stage.replace(/_/g, ' ');
   };
-  
+
   const orderedStageKeys = (present: Set<string>): string[] => [
     ...STAGE_ORDER.filter((s) => present.has(s)),
-    ...[...present]
-      .filter((s) => !(STAGE_ORDER as readonly string[]).includes(s))
-      .sort(),
+    ...[...present].filter((s) => !(STAGE_ORDER as readonly string[]).includes(s)).sort(),
   ];
-  
 
   Object.keys(byStage).forEach((stage) => {
     byStage[stage].sort(sortMatches);
@@ -91,10 +88,7 @@ const KnockoutBracket = ({ matches }: KnockoutBracketProps) => {
 
         return (
           <section key={stage} className="flex w-full max-w-3xl flex-col items-center gap-8">
-            <KnockoutRoundHeading
-              title={stageLabel(stage)}
-              showInboundStem={stageIndex > 0}
-            />
+            <KnockoutRoundHeading title={stageLabel(stage)} showInboundStem={stageIndex > 0} />
 
             {singleCentered ? (
               <div className="mx-auto w-full max-w-xl px-1">

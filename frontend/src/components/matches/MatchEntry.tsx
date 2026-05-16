@@ -26,9 +26,7 @@ const MatchEntry = ({ match, compact = false }: MatchEntryProps) => {
     >
       <div className="flex flex-1 items-center justify-end gap-2">
         {match.home_team.shortName ? (
-          <span
-            className={`${labelClass} font-medium text-foreground text-right leading-tight`}
-          >
+          <span className={`${labelClass} font-medium text-foreground text-right leading-tight`}>
             {match.home_team.shortName}
           </span>
         ) : (
@@ -51,9 +49,7 @@ const MatchEntry = ({ match, compact = false }: MatchEntryProps) => {
               {fullTime.home} – {fullTime.away}
             </span>
             {winner && (
-              <span className="text-[8px] font-medium uppercase tracking-wider text-muted">
-                FT
-              </span>
+              <span className="text-[8px] font-medium uppercase tracking-wider text-muted">FT</span>
             )}
           </>
         ) : (

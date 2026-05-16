@@ -35,7 +35,11 @@ const MySweepstakePicks = ({ sweepstakeId }: MySweepstakePicksProps) => {
         {picks.map((row) => (
           <li key={row.id} className="flex items-center gap-3 px-4 py-3 sm:px-5">
             {row.pick_option.crest ? (
-              <img src={row.pick_option.crest} alt="" className="h-6 w-6 lg:h-8 lg:w-8 shrink-0 object-contain" />
+              <img
+                src={row.pick_option.crest}
+                alt=""
+                className="h-6 w-6 lg:h-8 lg:w-8 shrink-0 object-contain"
+              />
             ) : (
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs text-muted">
                 ?
