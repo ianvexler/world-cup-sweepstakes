@@ -2,12 +2,13 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import getSweepstakes from '../../api/requests/sweepstakes/getSweepstakes';
-import updateSweepstakeStatus from '../../api/requests/sweepstakes/updateSweepstakeStatus';
+import updateSweepstake from '../../api/requests/sweepstakes/updateSweepstake';
 import { useEffect, useState } from 'react';
 import { sweepstakeStatuses, Sweepstake, SweepstakeStatus } from '../../../types';
 import Loader from '../../components/ui/Loader';
 import Button from '../../components/ui/Button';
 import Dropdown from '../../components/ui/Dropdown';
+import Input from '../../components/ui/form/Input';
 import { format, isValid, parseISO } from 'date-fns';
 import { capitalize } from '../../utils/capitalize';
 import assignTeams from '../../api/requests/sweepstakes/assignTeams';
@@ -24,11 +25,18 @@ const Admin = () => {
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
   const [statusSavingId, setStatusSavingId] = useState<string | null>(null);
+  const [deadlineSavingId, setDeadlineSavingId] = useState<string | null>(null);
+  const [deadlineInputs, setDeadlineInputs] = useState<Record<string, string>>({});
   const [assignTeamsLoading, setAssignTeamsLoading] = useState(false);
 
   const formatDateTime = (iso: string) => {
     const date = parseISO(iso);
     return isValid(date) ? format(date, 'PPp') : iso;
+  };
+
+  const toDatetimeLocalValue = (iso: string) => {
+    const date = parseISO(iso);
+    return isValid(date) ? format(date, "yyyy-MM-dd'T'HH:mm") : '';
   };
 
   useEffect(() => {
@@ -44,15 +52,39 @@ const Admin = () => {
       });
   }, [isAdmin, authLoading]);
 
+  useEffect(() => {
+    setDeadlineInputs(
+      Object.fromEntries(sweepstakes.map((s) => [s.id, toDatetimeLocalValue(s.deadline)]))
+    );
+  }, [sweepstakes]);
+
   const handleStatusChange = async (sweepstakeId: string, status: SweepstakeStatus) => {
     setStatusSavingId(sweepstakeId);
     try {
-      const updated = await updateSweepstakeStatus(sweepstakeId, status);
+      const updated = await updateSweepstake(sweepstakeId, { status });
       setSweepstakes((prev) => prev.map((s) => (s.id === sweepstakeId ? updated : s)));
     } catch {
       toast.error('Could not update status');
     } finally {
       setStatusSavingId(null);
+    }
+  };
+
+  const handleDeadlineSave = async (sweepstakeId: string) => {
+    const deadlineValue = deadlineInputs[sweepstakeId];
+    if (!deadlineValue) return;
+
+    setDeadlineSavingId(sweepstakeId);
+    try {
+      const updated = await updateSweepstake(sweepstakeId, {
+        deadline: new Date(deadlineValue).toISOString(),
+      });
+      setSweepstakes((prev) => prev.map((s) => (s.id === sweepstakeId ? updated : s)));
+      toast.success('Deadline updated');
+    } catch {
+      toast.error('Could not update deadline');
+    } finally {
+      setDeadlineSavingId(null);
     }
   };
 
@@ -130,7 +162,29 @@ const Admin = () => {
                     <dt className="text-xs font-medium uppercase tracking-wide text-muted">
                       Deadline
                     </dt>
-                    <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.deadline)}</dd>
+                    <dd className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center">
+                      <Input
+                        type="datetime-local"
+                        aria-label={`Deadline for ${s.name}`}
+                        value={deadlineInputs[s.id] ?? ''}
+                        disabled={deadlineSavingId === s.id}
+                        onChange={(e) =>
+                          setDeadlineInputs((prev) => ({ ...prev, [s.id]: e.target.value }))
+                        }
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="md"
+                        disabled={
+                          deadlineSavingId === s.id ||
+                          deadlineInputs[s.id] === toDatetimeLocalValue(s.deadline)
+                        }
+                        onClick={() => handleDeadlineSave(s.id)}
+                      >
+                        {deadlineSavingId === s.id ? 'Saving...' : 'Save'}
+                      </Button>
+                    </dd>
                   </div>
 
                   <div className="px-4 py-3 sm:px-5">
