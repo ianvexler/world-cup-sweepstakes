@@ -3,6 +3,7 @@ import './App.css';
 import Home from './pages/protected/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Loader from './components/ui/Loader';
 import { Toaster } from 'react-hot-toast';
@@ -26,6 +27,7 @@ const App = () => {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<Home />} />

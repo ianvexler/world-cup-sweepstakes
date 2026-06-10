@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: my_app_development
+      POSTGRES_DB: backend_development
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -27,7 +27,7 @@ services:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
       DATABASE_PASSWORD: password
-      DATABASE_NAME: my_app_development
+      DATABASE_NAME: backend_development
       DEVISE_JWT_SECRET_KEY: dev_jwt_secret_only_for_local_docker_not_production_use_long_key
     env_file:
       - .env

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       post "auth/sign_up", to: "registrations#create"
       delete "auth/sign_out", to: "sessions#destroy"
       get "auth/me", to: "sessions#show"
+      put "auth/password", to: "passwords#update"
 
       resources :sweepstakes, only: [ :index, :update ] do
         member do

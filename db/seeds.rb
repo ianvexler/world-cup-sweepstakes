@@ -1,7 +1,7 @@
 puts 'Creating users...'
 
 users_data = [
-  { email: 'ianvexler@gmail.com', name: 'Ian', password: ENV['ADMIN_PASSWORD'], is_admin: true }
+  { email: 'ianvexler@gmail.com', name: 'Ian', password: 'password', is_admin: true }
 ]
 
 if Rails.env.development?
