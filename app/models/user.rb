@@ -19,8 +19,6 @@
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 class User < ApplicationRecord
-  rolify
-
   has_many :user_sweepstakes, dependent: :destroy
   has_many :sweepstakes, through: :user_sweepstakes
   has_many :picks, through: :user_sweepstakes

@@ -3,15 +3,21 @@ import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 import getSweepstakes from '../../api/requests/sweepstakes/getSweepstakes';
 import updateSweepstake from '../../api/requests/sweepstakes/updateSweepstake';
+import getUsers from '../../api/requests/users/getUsers';
 import { useEffect, useState } from 'react';
-import { sweepstakeStatuses, Sweepstake, SweepstakeStatus } from '../../../types';
+import { AdminUser, sweepstakeStatuses, Sweepstake, SweepstakeStatus } from '../../../types';
 import Loader from '../../components/ui/Loader';
 import Button from '../../components/ui/Button';
 import Dropdown from '../../components/ui/Dropdown';
 import Input from '../../components/ui/form/Input';
+import Tabs from '../../components/ui/Tabs';
+import Alert from '../../components/ui/Alert';
 import { format, isValid, parseISO } from 'date-fns';
 import { capitalize } from '../../utils/capitalize';
 import assignTeams from '../../api/requests/sweepstakes/assignTeams';
+
+const adminTabs = ['Sweepstakes', 'Accounts'] as const;
+type AdminTab = (typeof adminTabs)[number];
 
 const sweepstakeStatusOptions = sweepstakeStatuses.map((value) => ({
   value,
@@ -22,8 +28,13 @@ const Admin = () => {
   const navigate = useNavigate();
   const { loading: authLoading, isAdmin } = useAuth();
 
+  const [activeTab, setActiveTab] = useState<AdminTab>('Sweepstakes');
   const [sweepstakes, setSweepstakes] = useState<Sweepstake[]>([]);
+  const [users, setUsers] = useState<AdminUser[]>([]);
   const [sweepstakesLoading, setSweepstakesLoading] = useState(true);
+  const [usersLoading, setUsersLoading] = useState(true);
+  const [sweepstakesError, setSweepstakesError] = useState('');
+  const [usersError, setUsersError] = useState('');
   const [statusSavingId, setStatusSavingId] = useState<string | null>(null);
   const [deadlineSavingId, setDeadlineSavingId] = useState<string | null>(null);
   const [deadlineInputs, setDeadlineInputs] = useState<Record<string, string>>({});
@@ -43,12 +54,35 @@ const Admin = () => {
     if (!isAdmin || authLoading) return;
 
     setSweepstakesLoading(true);
+    setSweepstakesError('');
     getSweepstakes()
       .then((data) => {
-        setSweepstakes(data);
+        setSweepstakes(Array.isArray(data) ? data : []);
+      })
+      .catch(() => {
+        setSweepstakesError('Could not load sweepstakes');
       })
       .finally(() => {
         setSweepstakesLoading(false);
+      });
+  }, [isAdmin, authLoading]);
+
+  useEffect(() => {
+    if (!isAdmin || authLoading) {
+      return
+    };
+
+    setUsersLoading(true);
+    setUsersError('');
+    getUsers()
+      .then((data) => {
+        setUsers(data);
+      })
+      .catch(() => {
+        setUsersError('Could not load accounts');
+      })
+      .finally(() => {
+        setUsersLoading(false);
       });
   }, [isAdmin, authLoading]);
 
@@ -114,10 +148,6 @@ const Admin = () => {
     return <Navigate to="/" replace />;
   }
 
-  if (sweepstakesLoading) {
-    return <Loader className="h-screen w-screen" size={40} />;
-  }
-
   return (
     <div className="flex min-h-dvh w-full flex-col items-stretch px-4 pb-[max(3rem,env(safe-area-inset-bottom,0px))] pt-6 sm:items-center sm:px-6 sm:pb-16 sm:pt-8">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
@@ -135,111 +165,161 @@ const Admin = () => {
           </header>
         </div>
 
-        {sweepstakes.length === 0 ? (
-          <div className="rounded-2xl border border-border bg-field/50 px-4 py-10 text-center text-sm text-muted shadow-xl ring-1 ring-white/5 backdrop-blur-sm">
-            No sweepstakes in the database.
+        <Tabs tabs={[...adminTabs]} activeTab={activeTab} onChange={setActiveTab} />
+
+        {activeTab === 'Sweepstakes' && (
+          <div className="flex flex-col gap-4">
+            {sweepstakesLoading ? (
+              <Loader className="py-10" size={40} />
+            ) : sweepstakesError ? (
+              <Alert variant="danger" heading="Error">
+                {sweepstakesError}
+              </Alert>
+            ) : sweepstakes.length === 0 ? (
+              <div className="rounded-2xl border border-border bg-field/50 px-4 py-10 text-center text-sm text-muted shadow-xl ring-1 ring-white/5 backdrop-blur-sm">
+                No sweepstakes in the database.
+              </div>
+            ) : (
+              <ul className="flex flex-col gap-4">
+                {sweepstakes.map((s) => (
+                  <li
+                    key={s.id}
+                    className="overflow-hidden rounded-2xl border border-border bg-field/50 shadow-xl ring-1 ring-white/5 backdrop-blur-sm"
+                  >
+                    <div className="border-b border-border/80 px-4 py-3 sm:px-5">
+                      <h2 className="text-lg font-semibold text-foreground">{s.name}</h2>
+                    </div>
+
+                    <dl className="grid gap-0 divide-y divide-border/60 sm:grid-cols-2 sm:gap-px sm:divide-y-0">
+                      <div className="px-4 py-3 sm:px-5">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">ID</dt>
+                        <dd className="mt-1 font-mono text-sm text-foreground">{s.id}</dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                          Deadline
+                        </dt>
+                        <dd className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center">
+                          <Input
+                            type="datetime-local"
+                            aria-label={`Deadline for ${s.name}`}
+                            value={deadlineInputs[s.id] ?? ''}
+                            disabled={deadlineSavingId === s.id}
+                            onChange={(e) =>
+                              setDeadlineInputs((prev) => ({ ...prev, [s.id]: e.target.value }))
+                            }
+                          />
+                          <Button
+                            type="button"
+                            variant="secondary"
+                            size="md"
+                            disabled={
+                              deadlineSavingId === s.id ||
+                              deadlineInputs[s.id] === toDatetimeLocalValue(s.deadline)
+                            }
+                            onClick={() => handleDeadlineSave(s.id)}
+                          >
+                            {deadlineSavingId === s.id ? 'Saving...' : 'Save'}
+                          </Button>
+                        </dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                          Status
+                        </dt>
+                        <dd className="mt-1">
+                          <Dropdown
+                            aria-label={`Status for ${s.name}`}
+                            value={s.status}
+                            options={sweepstakeStatusOptions}
+                            disabled={statusSavingId === s.id}
+                            onChange={(value) => handleStatusChange(s.id, value as SweepstakeStatus)}
+                          />
+                        </dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5 sm:col-span-2">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                          Join code
+                        </dt>
+                        <dd className="mt-1 font-mono text-sm text-foreground">{s.join_code}</dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                          Created
+                        </dt>
+                        <dd className="mt-1 text-sm text-foreground">
+                          {formatDateTime(s.created_at)}
+                        </dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5">
+                        <dt className="text-xs font-medium uppercase tracking-wide text-muted">
+                          Updated
+                        </dt>
+                        <dd className="mt-1 text-sm text-foreground">
+                          {formatDateTime(s.updated_at)}
+                        </dd>
+                      </div>
+
+                      <div className="px-4 py-3 sm:px-5">
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="md"
+                          onClick={() => handleAssignTeams(s.id)}
+                          disabled={assignTeamsLoading || s.assigned_teams}
+                        >
+                          {assignTeamsLoading ? 'Assigning...' : 'Assign teams'}
+                        </Button>
+                      </div>
+                    </dl>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        ) : (
-          <ul className="flex flex-col gap-4">
-            {sweepstakes.map((s) => (
-              <li
-                key={s.id}
-                className="overflow-hidden rounded-2xl border border-border bg-field/50 shadow-xl ring-1 ring-white/5 backdrop-blur-sm"
-              >
-                <div className="border-b border-border/80 px-4 py-3 sm:px-5">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <h2 className="text-lg font-semibold text-foreground">{s.name}</h2>
-                  </div>
-                </div>
+        )}
 
-                <dl className="grid gap-0 divide-y divide-border/60 sm:grid-cols-2 sm:gap-px sm:divide-y-0">
-                  <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">ID</dt>
-                    <dd className="mt-1 font-mono text-sm text-foreground">{s.id}</dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-                      Deadline
-                    </dt>
-                    <dd className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center">
-                      <Input
-                        type="datetime-local"
-                        aria-label={`Deadline for ${s.name}`}
-                        value={deadlineInputs[s.id] ?? ''}
-                        disabled={deadlineSavingId === s.id}
-                        onChange={(e) =>
-                          setDeadlineInputs((prev) => ({ ...prev, [s.id]: e.target.value }))
-                        }
-                      />
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        size="md"
-                        disabled={
-                          deadlineSavingId === s.id ||
-                          deadlineInputs[s.id] === toDatetimeLocalValue(s.deadline)
-                        }
-                        onClick={() => handleDeadlineSave(s.id)}
-                      >
-                        {deadlineSavingId === s.id ? 'Saving...' : 'Save'}
-                      </Button>
-                    </dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-                      Status
-                    </dt>
-                    <dd className="mt-1">
-                      <Dropdown
-                        aria-label={`Status for ${s.name}`}
-                        value={s.status}
-                        options={sweepstakeStatusOptions}
-                        disabled={statusSavingId === s.id}
-                        onChange={(value) => handleStatusChange(s.id, value as SweepstakeStatus)}
-                      />
-                    </dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5 sm:col-span-2">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-                      Join code
-                    </dt>
-                    <dd className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="font-mono text-sm text-foreground">{s.join_code}</span>
-                    </dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-                      Created
-                    </dt>
-                    <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.created_at)}</dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5">
-                    <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-                      Updated
-                    </dt>
-                    <dd className="mt-1 text-sm text-foreground">{formatDateTime(s.updated_at)}</dd>
-                  </div>
-
-                  <div className="px-4 py-3 sm:px-5">
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="md"
-                      onClick={() => handleAssignTeams(s.id)}
-                      disabled={assignTeamsLoading || s.assigned_teams}
-                    >
-                      {assignTeamsLoading ? 'Assigning...' : 'Assign teams'}
-                    </Button>
-                  </div>
-                </dl>
-              </li>
-            ))}
-          </ul>
+        {activeTab === 'Accounts' && (
+          <div className="flex flex-col gap-4">
+            {usersLoading ? (
+              <Loader className="py-10" size={40} />
+            ) : usersError ? (
+              <Alert variant="danger" heading="Error">
+                {usersError}
+              </Alert>
+            ) : users.length === 0 ? (
+              <div className="rounded-2xl border border-border bg-field/50 px-4 py-10 text-center text-sm text-muted shadow-xl ring-1 ring-white/5 backdrop-blur-sm">
+                No accounts in the database.
+              </div>
+            ) : (
+              <ul className="flex flex-col gap-3">
+                {users.map((user) => (
+                  <li
+                    key={user.id}
+                    className="rounded-2xl border border-border bg-field/50 px-4 py-4 shadow-xl ring-1 ring-white/5 backdrop-blur-sm sm:px-5"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <p className="font-medium text-foreground">{user.name || 'Unnamed user'}</p>
+                      {user.is_admin && (
+                        <span className="rounded-full bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">
+                          Admin
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 truncate text-sm text-muted">{user.email}</p>
+                    <p className="mt-1 text-xs text-muted">
+                      Joined {formatDateTime(user.created_at)}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -12,7 +12,6 @@ gem "rack-cors"
 gem "devise", "~> 5.0"
 gem "devise-jwt"
 gem "httparty"
-gem "rolify"
 
 group :development, :test do
   gem "annotaterb"

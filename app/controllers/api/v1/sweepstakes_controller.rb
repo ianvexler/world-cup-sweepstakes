@@ -2,7 +2,12 @@ class Api::V1::SweepstakesController < ApplicationController
   before_action :require_admin!, only: [ :update, :assign_teams ]
 
   def index
-    sweepstakes = Sweepstake.for_user(current_user)
+    sweepstakes = if current_user.is_admin?
+      Sweepstake.order(:created_at)
+    else
+      Sweepstake.for_user(current_user)
+    end
+
     render json: sweepstakes, status: :ok, each_serializer: SweepstakeSerializer
   end
 

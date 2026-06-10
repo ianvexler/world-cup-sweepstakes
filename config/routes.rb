@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         resources :sweepstake_picks, only: [ :index ], module: :sweepstakes
         resources :league, only: [ :index ], module: :sweepstakes
       end
+      resources :users, only: [ :index ]
       resources :standings, only: [ :index ]
       resources :matches, only: [ :index ]
 

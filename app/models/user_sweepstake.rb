@@ -23,7 +23,6 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class UserSweepstake < ApplicationRecord
-  resourcify
   has_many :picks, dependent: :destroy
   has_many :sweepstake_picks, dependent: :destroy
 
